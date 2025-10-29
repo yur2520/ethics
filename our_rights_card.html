@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="styles.css">
+    <title>우리 모두의 소중한 권리 (쉬운 말, 격식체)</title>
+    <style>
+        
+        /* * 전체 페이지 스타일
+         * 'Noto Sans KR' 폰트를 사용해 가독성을 높였습니다.
+         */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        body {
+            font-family: 'SUITE Variable', 'Noto Sans KR', sans-serif; /* 읽기 편한 폰트 */
+            background-color: #f8f9fa; /* 부드러운 배경색 */
+            color: #333; /* 기본 글자색 */
+            line-height: 1.8; /* 줄 간격을 넉넉하게 (수정) */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* * 제목(머리말) 부분 
+         */
+        header {
+            background-color: #007bff; /* 신뢰감을 주는 파란색 */
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 5px solid #0056b3;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem; /* 제목 크기 */
+        }
+
+        header p {
+            font-size: 1.2rem; /* 글자 크기 키움 (수정) */
+            opacity: 0.9; /* 부제목은 살짝 연하게 */
+        }
+
+        /* * 카드들이 담길 메인 공간 
+         * 'grid'를 사용해 카드를 바둑판처럼 정렬합니다.
+         */
+        .card-container {
+            display: grid;
+            /* * 화면 크기에 맞춰 카드의 개수를 조절합니다.
+             * 최소 320px 크기를 보장하고, 공간이 남으면 채웁니다. 
+             */
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px; /* 카드 사이의 간격 */
+            padding: 24px; /* 전체 여백 */
+            max-width: 850px; /* 최대 2열이 되도록 너비 제한 (수정) */
+            margin: 0 auto; /* 가운데 정렬 */
+        }
+
+        /* * 카드 뒤집기를 위한 컨테이너 
+         */
+        .card-flip {
+            perspective: 1000px;
+            height: 400px; /* 카드 높이 증가 (수정) */
+            cursor: pointer;
+        }
+
+        .card-flip-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .card-flip.flipped .card-flip-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* * 카드 앞면과 뒷면 공통 스타일 
+         */
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            background-color: white;
+            border-radius: 12px; /* 부드러운 모서리 */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* 은은한 그림자 */
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        /* 카드 앞면 스타일 */
+        .card-front .emoji {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .card-front h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .card-front p {
+            font-size: 1.1rem; /* 글자 크기 키움 (수정) */
+            line-height: 1.7; /* (수정) */
+            opacity: 0.95;
+        }
+
+        .card-front .hint {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        /* 카드 뒷면 스타일 (기존 카드 스타일) */
+        .card-back h2 {
+            /* (수정) 캡슐 스타일 적용 */
+            font-size: 1.3rem; 
+            font-weight: 700;
+            color: #ffffff; /* 흰색 글자 */
+            background-color: #007bff; /* 파란색 배경 */
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding: 8px 16px; /* 안쪽 여백 */
+            border-radius: 50px; /* 둥근 모서리 */
+            display: inline-block; /* 내용만큼만 크기 차지 */
+        }
+
+        .card-back p {
+            font-size: 1.1rem; /* 글자 크기 키움 (수정) */
+            color: #555;
+            margin-bottom: 15px;
+        }
+        
+        .card-back p:last-child {
+            margin-bottom: 0;
+        }
+
+        .card-back ol {
+            font-size: 1.1rem; /* 글자 크기 키움 (수정) */
+            color: #555;
+            padding-left: 25px; /* 목록 들여쓰기 */
+            margin-bottom: 0;
+        }
+
+        .card-back li {
+            margin-bottom: 10px; /* 목록 항목 간 간격 */
+        }
+        
+        .card-back li:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 호버 효과 */
+        .card-flip:hover .card-flip-inner {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* * 꼬리말(Footer) 스타일 
+         */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #343a40; /* 어두운 배경 */
+            color: #aaa;
+            margin-top: 30px;
+            font-size: 0.9rem;
+        }
+
+        /* 스크롤바 스타일 */
+        .card-back::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .card-back::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .card-back::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        .card-back::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>우리 모두의 소중한 권리 📜</h1>
+        <p>어린이 여러분이 꼭 알아야 할 인권 이야기입니다. (카드를 클릭해 보십시오!)</p>
+    </header>
+
+    <main class="card-container">
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">👫</div>
+                    <h2>우리 반 친구들</h2>
+                    <p>우리 반에는 아프리카에서 온 다문화 친구, 휠체어를 타는 친구, 안경을 쓴 친구가 있습니다. 모습과 환경은 달라도, 우리 모두는 똑같이 소중한 사람입니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 1조 (모두 똑같이 소중해요)</h2>
+                    <p>모든 사람은 태어날 때부터 자유롭고, 똑같이 소중한 존재입니다. 우리에겐 생각하는 힘과 착한 마음이 있으니, 서로 친구처럼 아끼고 도와야 합니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">🌈</div>
+                    <h2>다문화 친구 민수</h2>
+                    <p>민수 어머니는 베트남에서 오셨습니다. 한 친구가 민수에게 "너희 나라로 돌아가"라고 말했습니다. 선생님께서는 "민수도 우리와 똑같은 권리를 누릴 자격이 있습니다"라고 말씀하셨습니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 2조 (차별하면 안 돼요)</h2>
+                    <p>피부색, 성별, 사용하는 말, 종교가 다르거나, 생각이 달라도 괜찮습니다. 어느 나라 사람인지, 부자인지 아닌지에 상관없이 모든 사람이 이 권리들을 똑같이 누려야 합니다.</p>
+                    <p>그 사람이 사는 곳이 어떤 곳이든 차별받으면 안 됩니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">🏠</div>
+                    <h2>안전한 우리 집</h2>
+                    <p>집에 돌아오면 따뜻한 방과 맛있는 저녁이 기다립니다. 누구에게도 위협받지 않고 편안하게 잠을 잘 수 있습니다. 이것이 바로 안전하게 살 권리입니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 3조 (안전하게 살 권리)</h2>
+                    <p>모든 사람은 살아갈 권리, 자유롭게 지낼 권리, 그리고 안전하게 보호받을 권리가 있습니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">🚫</div>
+                    <h2>억지로 시키면 안 됩니다</h2>
+                    <p>뉴스에서 어떤 나라의 어린이들이 학교에 가지 못하고, 하루 종일 공장에서 어른들처럼 힘들게 일하는 것을 보았습니다. 누구도 다른 사람을 노예처럼 부려서는 안 됩니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 4조 (노예가 되지 않아요)</h2>
+                    <p>아무도 다른 사람의 노예가 될 수 없습니다. 다른 사람을 물건처럼 사고파는 일은 절대로 안 됩니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">❌</div>
+                    <h2>학교 폭력은 안 됩니다</h2>
+                    <p>복도에서 힘이 센 친구가 작은 친구의 어깨를 밀치고 돈을 빼앗으려 했습니다. 아픈 말이나 행동으로 다른 사람을 괴롭히는 것은 절대 안 됩니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 5조 (괴롭힘당하지 않아요)</h2>
+                    <p>아무도 다른 사람을 잔인하게 괴롭히거나, 벌을 주어서는 안 됩니다. 다른 사람을 창피하게 만드는 것도 안 됩니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">⚖️</div>
+                    <h2>경찰서에 간 날</h2>
+                    <p>놀이터에서 길을 잃어버려 경찰서에 갔습니다. 경찰관님은 저의 이름을 묻고 부모님께 연락해 주셨습니다. 어린이도 법 앞에서 한 사람으로 존중받아야 합니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 6조 (법 앞에서 존중받을 권리)</h2>
+                    <p>모든 사람은 어디에 있든지 법 앞에서 한 명의 소중한 사람으로 존중받을 권리가 있습니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">👨‍⚖️</div>
+                    <h2>모두에게 공평한 규칙</h2>
+                    <p>우리 반의 '수업 시간에 떠들지 않기' 규칙은 반장도 지켜야 하고, 새로 전학 온 친구도 지켜야 합니다. 법과 규칙 앞에서는 모두가 똑같습니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 7조 (법 앞에서 평등해요)</h2>
+                    <p>모든 사람은 법 앞에서 평등합니다. 차별 없이 똑같이 법의 보호를 받아야 합니다. 다른 사람을 차별하라고 부추기는 말이나 행동으로부터도 보호받아야 합니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">🆘</div>
+                    <h2>도움을 청할 수 있습니다</h2>
+                    <p>운동장에서 한 친구가 제 준비물을 빼앗아갔습니다. 선생님께 말씀드렸더니, 선생님께서 친구에게 준비물을 돌려주라고 하셨습니다. 내 권리를 지키기 위해 도움을 청할 수 있습니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 8조 (도와달라고 할 권리)</h2>
+                    <p>나라에서 약속한 나의 소중한 권리를 누군가 빼앗으려 할 때, 법원에 가서 도와달라고 할 수 있는 권리가 있습니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">🔓</div>
+                    <h2>이유 없이 벌 받지 않습니다</h2>
+                    <p>내가 무엇을 잘못했는지 정확한 설명도 듣지 못하고 벌을 받으면 안 됩니다. 잘못한 일이 있다면, 먼저 설명을 듣고 자신의 의견을 이야기할 기회가 있어야 합니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 9조 (함부로 잡혀가지 않아요)</h2>
+                    <p>아무도 아무 이유 없이 함부로 잡혀가거나, 감옥에 갇히거나, 자기 나라에서 쫓겨나면 안 됩니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">⚖️</div>
+                    <h2>공정한 판단</h2>
+                    <p>학급 회의에서 '누가 교실 창문을 깼는가'에 대해 이야기합니다. 선생님은 양쪽의 이야기를 모두 듣고, 공평하게 판단하셔야 합니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 10조 (공평하게 재판받을 권리)</h2>
+                    <p>내가 잘못한 일이 있는지 재판을 받을 때, 모든 사람에게 공평하고 독립된 법원에서 공정한 재판을 받을 권리가 있습니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">🤔</div>
+                    <h2>증거가 없으면 무죄입니다</h2>
+                    <p>누군가 "철수가 내 지우개를 가져갔습니다"라고 말해도, 확실한 증거가 없고 철수도 아니라고 하면, 철수가 가져간 것으로 단정하면 안 됩니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 11조 (죄가 정해지기 전엔 죄인이 아니에요)</h2>
+                    <ol>
+                        <li>재판에서 "잘못했습니다"라는 판결이 나오기 전까지는, 그 사람은 잘못이 없는 것으로 생각해야 합니다. (무죄 추정)</li>
+                        <li>어떤 행동을 했을 때 법으로 '나쁜 짓'이 아니었다면, 나중에 법이 바뀌었다고 해서 벌을 받으면 안 됩니다. 또, 원래 정해진 벌보다 더 무겁게 벌을 받아서도 안 됩니다.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">🔒</div>
+                    <h2>나만의 비밀 일기장</h2>
+                    <p>내 일기장과 책상 서랍 속 편지는 나만 볼 수 있습니다. 다른 친구나 어른이 제 허락 없이 몰래 보면 안 됩니다. 저의 사생활은 소중합니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 12조 (나의 사생활을 지킬 권리)</h2>
+                    <p>아무도 함부로 나의 개인적인 생활이나 우리 가족 일에 간섭할 수 없습니다. 내 편지나 일기, 메시지를 몰래 훔쳐보거나, 나에 대해 나쁘게 이야기해서도 안 됩니다. 법이 이런 것들로부터 나를 지켜줍니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">✈️</div>
+                    <h2>할머니 댁 여행</h2>
+                    <p>방학에 부산에 계신 할머니 댁에 놀러 갔습니다. 우리 가족은 원하는 곳 어디든 자유롭게 여행하고, 다른 도시로 이사 갈 수도 있습니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 13조 (자유롭게 다닐 수 있어요)</h2>
+                    <ol>
+                        <li>모든 사람은 자기 나라 안에서 마음대로 이사 가거나 여행할 수 있습니다.</li>
+                        <li>다른 나라로 떠날 수 있고, 원하면 언제든 자기 나라로 다시 돌아올 수 있습니다.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">🛡️</div>
+                    <h2>위험에서 도망칠 수 있습니다</h2>
+                    <p>뉴스에서 전쟁이 일어난 나라의 사람들이 안전한 다른 나라로 피해 가는 것을 보았습니다. 위험할 때 다른 나라에 도움을 청할 수 있습니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 14조 (보호해 달라고 부탁할 권리)</h2>
+                    <ol>
+                        <li>내 나라에서 괴롭힘을 당할 때, 다른 나라로 피해서 보호해 달라고 부탁할 권리가 있습니다.</li>
+                        <li>하지만 도둑질 같은 다른 나쁜 짓을 해서 도망치거나, UN(유엔)의 약속에 어긋나는 행동을 한 경우에는 이 권리를 사용할 수 없습니다.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">🇰🇷</div>
+                    <h2>나는 대한민국 사람입니다</h2>
+                    <p>저의 여권에는 "대한민국"이라고 적혀 있습니다. 저는 대한민국 국민이며, 이 자격은 아무도 함부로 빼앗을 수 없습니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 15조 (나라를 가질 권리)</h2>
+                    <ol>
+                        <li>모든 사람은 '어느 나라 사람'인지(국적) 가질 권리가 있습니다.</li>
+                        <li>함부로 그 나라 사람이라는 자격을 빼앗기거나, 다른 나라 사람으로 바꾸고 싶을 때 막으면 안 됩니다.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">💑</div>
+                    <h2>엄마 아빠의 결혼식 사진</h2>
+                    <p>앨범에서 엄마 아빠의 결혼식 사진을 보았습니다. 두 분은 서로 사랑해서 자유롭게 결혼하셨고, 저희 가족을 만드셨습니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 16조 (결혼하고 가정을 만들 권리)</h2>
+                    <ol>
+                        <li>어른이 된 남자와 여자는 인종이나 나라, 종교에 상관없이 결혼해서 가정을 만들 수 있습니다. 결혼할 때나, 결혼 생활 중이나, 헤어질 때나 똑같은 권리를 가집니다.</li>
+                        <li>결혼은 꼭 두 사람이 정말로 원할 때만 할 수 있습니다.</li>
+                        <li>가정은 사회의 아주 중요한 부분입니다. 그래서 나라와 사회가 가정을 보호해 주어야 합니다.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">🎮</div>
+                    <h2>내 게임기</h2>
+                    <p>생일 선물로 받은 게임기는 제 것입니다. 동생이 가지고 놀고 싶으면 저의 허락을 받아야 합니다. 저의 물건은 함부로 빼앗기면 안 됩니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 17조 (내 것을 가질 권리)</h2>
+                    <ol>
+                        <li>모든 사람은 혼자서 또는 다른 사람과 함께 재산(내 것)을 가질 권리가 있습니다.</li>
+                        <li>아무도 함부로 내 재산을 빼앗아갈 수 없습니다.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">🙏</div>
+                    <h2>각자 다른 믿음</h2>
+                    <p>우리 반에는 주말에 교회에 가는 친구, 절에 가는 친구, 아무 곳도 가지 않는 친구가 있습니다. 모두가 자신의 생각을 자유롭게 선택할 수 있습니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 18조 (자유롭게 생각하고 믿을 권리)</h2>
+                    <p>모든 사람은 자유롭게 생각하고, 착한 마음에 따라 행동하고, 종교를 가질 수 있습니다. 종교를 바꾸거나, 혼자 또는 여럿이서 '저는 이것을 믿습니다'라고 가르치거나, 기도하는 것도 자유입니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">💬</div>
+                    <h2>학급 회의에서 발표하기</h2>
+                    <p>학급 회의 시간에 "급식 순서를 바꾸었으면 좋겠습니다"라고 손을 들고 제 생각을 자유롭게 말할 수 있습니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 19조 (자유롭게 말할 권리)</h2>
+                    <p>모든 사람은 자기 생각을 자유롭게 말할 권리가 있습니다. 다른 사람의 방해 없이 내 의견을 가질 수 있고, 인터넷이나 책, 방송을 통해 다른 나라의 정보나 생각을 찾고, 받고, 다른 사람에게 알려줄 수 있습니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">👥</div>
+                    <h2>축구 동아리 만들기</h2>
+                    <p>축구를 좋아하는 친구들 5명과 함께 축구 동아리를 만들었습니다. 하기 싫은 친구는 억지로 참여하지 않아도 됩니다. 자유롭게 모이고 헤어질 수 있습니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 20조 (자유롭게 모일 권리)</h2>
+                    <ol>
+                        <li>모든 사람은 평화롭게 다른 사람들과 모이거나, 단체를 만들 수 있는 자유가 있습니다.</li>
+                        <li>억지로 어떤 모임에 들어가라고 강요당하면 안 됩니다.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">🗳️</div>
+                    <h2>반장 선거</h2>
+                    <p>우리 반 반장을 뽑는 날입니다. 모든 친구가 투표용지에 원하는 후보의 이름을 적어 비밀 투표를 합니다. 한 표 한 표가 모두 소중합니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 21조 (나라 일에 참여할 권리)</h2>
+                    <ol>
+                        <li>모든 사람은 직접 또는 내가 뽑은 대표를 통해 나라 일(정치)에 참여할 권리가 있습니다.</li>
+                        <li>모든 사람은 똑같이 나라를 위해 일하는 공무원이 될 수 있습니다.</li>
+                        <li>나라를 다스리는 힘은 국민에게서 나옵니다. 이 힘은 투표를 통해 보여줄 수 있습니다. 투표는 공평하고 비밀스럽게 이루어져야 합니다.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">🏥</div>
+                    <h2>아플 때 병원 가기</h2>
+                    <p>감기에 걸려 열이 나자 병원에 갔습니다. 의사 선생님이 진찰하고 약을 주셨습니다. 모든 사람이 아플 때 치료받을 수 있어야 합니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 22조 (나라의 보호를 받을 권리)</h2>
+                    <p>모든 사람은 사회의 한 사람으로서 나라의 보호(사회보장)를 받을 권리가 있습니다. 또, 내가 멋지게 성장하고 행복하게 사는 데 꼭 필요한 경제적, 사회적, 문화적 권리들을 누릴 자격이 있습니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">💼</div>
+                    <h2>부모님의 직업</h2>
+                    <p>저희 어머니는 선생님이고, 아버지는 요리사입니다. 두 분 다 자신이 원하는 일을 하시고, 일한 만큼 월급을 받으십니다. 모든 어른이 일할 권리가 있습니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 23조 (일할 권리)</h2>
+                    <ol>
+                        <li>모든 사람은 일을 할 권리, 원하는 직업을 고를 권리, 공평하고 좋은 환경에서 일할 권리가 있습니다. 직업을 잃었을 때는 보호를 받아야 합니다.</li>
+                        <li>똑같은 일을 하면 차별 없이 똑같은 돈(월급)을 받아야 합니다.</li>
+                        <li>일하는 사람은 나와 내 가족이 행복하게 살 수 있을 만큼 충분한 돈을 받아야 합니다. 만약 부족하다면, 나라의 도움을 받을 수 있어야 합니다.</li>
+                        <li>일하는 사람들끼리 모여서 '노동조합'을 만들고, 가입할 권리가 있습니다.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">🌴</div>
+                    <h2>여름 방학</h2>
+                    <p>드디어 여름 방학입니다. 학교에서 공부하는 것도 중요하지만, 쉬는 시간도 필요합니다. 신나게 놀고 충분히 쉴 수 있어야 합니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 24조 (쉴 권리)</h2>
+                    <p>모든 사람은 쉴 수 있는 권리와 즐겁게 쉴 수 있는 권리가 있습니다. 너무 오래 일하지 않도록 하고, 돈을 받으면서 쉬는 날(유급 휴가)을 가질 수 있어야 합니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">🍚</div>
+                    <h2>따뜻한 밥과 안전한 집</h2>
+                    <p>매일 따뜻한 밥을 먹고, 깨끗한 옷을 입고, 아늑한 집에서 삽니다. 모든 사람이 이렇게 기본적인 생활을 하며 행복하게 살 수 있어야 합니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 25조 (행복하게 살 권리)</h2>
+                    <ol>
+                        <li>모든 사람은 나와 내 가족이 건강하고 행복하게 사는 데 필요한 것들(음식, 옷, 집, 병원 치료 등)을 누릴 권리가 있습니다. 아프거나, 장애가 있거나, 나이가 많거나, 살기 어려워졌을 때 나라의 보호를 받아야 합니다.</li>
+                        <li>엄마와 어린이는 특별한 보살핌과 도움을 받을 자격이 있습니다. 모든 어린이는 부모님이 결혼했든 안 했든 상관없이 똑같은 보호를 받습니다.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">📚</div>
+                    <h2>학교에서 배우기</h2>
+                    <p>매일 학교에 가서 선생님께 배웁니다. 글을 읽고, 수학을 풀고, 친구들과 함께 공부합니다. 모든 어린이가 학교에 다닐 수 있어야 합니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 26조 (공부할 권리)</h2>
+                    <ol>
+                        <li>모든 사람은 교육을 받을 권리가 있습니다. 특히 초등학교와 기본 교육은 공짜여야 하고, 꼭 받아야 합니다(의무교육). 대학교는 공부할 능력만 있다면 누구에게나 열려 있어야 합니다.</li>
+                        <li>교육은 우리 마음을 잘 자라게 하고, 다른 사람의 권리와 자유를 존중하도록 가르쳐야 합니다. 모든 나라, 모든 사람들끼리 서로 이해하고 친하게 지내도록 도와야 합니다.</li>
+                        <li>부모님은 자녀가 어떤 교육을 받을지 먼저 선택할 권리가 있습니다.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">🎨</div>
+                    <h2>미술관 견학</h2>
+                    <p>오늘은 미술관에 견학을 갔습니다. 멋진 그림들을 보고, 저녁에는 가족과 음악회에도 갔습니다. 문화를 즐기는 것도 우리의 권리입니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 27조 (문화를 즐길 권리)</h2>
+                    <ol>
+                        <li>모든 사람은 우리 동네나 나라의 문화생활(음악, 미술, 축제 등)에 자유롭게 참여하고, 예술을 즐기고, 과학의 발전을 함께 누릴 권리가 있습니다.</li>
+                        <li>내가 만든 책, 그림, 음악, 발명품 등에서 생기는 이익은 보호받을 권리가 있습니다.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">🌍</div>
+                    <h2>평화로운 세상</h2>
+                    <p>전쟁이 없고, 모든 사람이 차별받지 않고 친하게 지내는 세상에서 살고 싶습니다. 우리 모두가 행복하고 안전하게 살 수 있는 세상이 필요합니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 28조 (평화로운 세상에서 살 권리)</h2>
+                    <p>모든 사람은 이 선언에 적힌 모든 권리와 자유가 완전히 이루어지는 사회와 세상에서 살아갈 자격이 있습니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">🤝</div>
+                    <h2>우리 반 청소 당번</h2>
+                    <p>오늘은 제가 교실 청소 당번입니다. 권리만 있는 것이 아니라, 사회의 한 사람으로서 해야 할 일도 있습니다. 우리 모두가 교실을 깨끗하게 사용해야 합니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 29조 (우리의 의무)</h2>
+                    <ol>
+                        <li>모든 사람은 내가 속한 사회(공동체)에 대한 의무(할 일)가 있습니다. 우리는 사회 속에서만 멋지게 성장할 수 있기 때문입니다.</li>
+                        <li>우리의 권리를 누리는 것은 중요하지만, 다른 사람의 권리를 지켜주고 모두의 안전과 행복을 위해서라면 법에 따라 조금 제한될 수도 있습니다.</li>
+                        <li>어떤 경우에도 이 권리들을 UN(유엔)의 약속에 어긋나게 사용해서는 안 됩니다.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-flip" onclick="this.classList.toggle('flipped')">
+            <div class="card-flip-inner">
+                <div class="card-front">
+                    <div class="emoji">🛡️</div>
+                    <h2>모두의 권리를 지켜야 합니다</h2>
+                    <p>나의 권리가 소중한 만큼, 내 친구들의 권리도 소중합니다. "나만 좋으면 돼"라고 생각하며 다른 사람의 권리를 함부로 빼앗아서는 안 됩니다.</p>
+                    <div class="hint">💡 카드를 클릭하면 관련 권리를 볼 수 있습니다</div>
+                </div>
+                <div class="card-back">
+                    <h2>제 30조 (권리를 없애려고 하면 안 돼요)</h2>
+                    <p>이 선언에 적힌 어떤 내용도, 다른 사람의 권리와 자유를 망가뜨리거나 없애기 위한 행동을 해도 된다는 뜻으로 생각해서는 절대로 안 됩니다.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>초등학교 인권 교육을 위한 자료입니다. (세계 인권 선언문 쉬운 말, 격식체)</p>
+    </footer>
+
+    <script>
+        // 카드 뒤집기는 CSS와 onclick으로 처리됩니다.
+        // 필요시 추가 기능을 여기에 작성할 수 있습니다.
+    </script>
+
+</body>
+</html>
